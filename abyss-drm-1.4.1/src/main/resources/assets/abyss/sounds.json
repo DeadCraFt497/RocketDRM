@@ -1,0 +1,47 @@
+{
+  "csgo_hitmarker": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "abyss:csgo_hitmarker",
+        "stream": true
+      }
+    ]
+  },
+  "cod_hitmarker": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "abyss:cod_hitmarker",
+        "stream": true
+      }
+    ]
+  },
+  "cara_al_sol": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "abyss:cara_al_sol",
+        "stream": true
+      }
+    ]
+  },
+  "bakaa": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "abyss:bakaa",
+        "stream": true
+      }
+    ]
+  },
+  "message": {
+    "category": "player",
+    "sounds": [
+      {
+        "name": "abyss:message",
+        "stream": true
+      }
+    ]
+  }
+}

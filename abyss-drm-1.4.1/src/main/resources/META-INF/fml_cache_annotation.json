@@ -1,0 +1,8 @@
+{
+  "me/crystallinqq/Loader": {
+    "name": "me/crystallinqq/Loader",
+    "interfaces": [
+      "net/minecraftforge/fml/relauncher/IFMLLoadingPlugin"
+    ]
+  }
+}

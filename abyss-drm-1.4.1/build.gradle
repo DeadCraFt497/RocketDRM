@@ -1,0 +1,168 @@
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven {
+            name = 'forge'
+            url = 'http://files.minecraftforge.net/maven'
+        }
+        maven {
+            name = 'SpongePowered'
+            url = 'https://repo.spongepowered.org/repository/maven-public'
+        }
+    }
+    dependencies {
+	classpath 'net.minecraftforge.gradle:ForgeGradle:2.3-SNAPSHOT'
+    classpath 'org.spongepowered:mixingradle:0.4-SNAPSHOT'
+    classpath 'com.github.jengelman.gradle.plugins:shadow:1.2.3'
+    classpath 'com.google.code.gson:gson:2.8.6'
+    }
+}
+
+plugins {
+    id 'java'
+}
+
+apply plugin: 'net.minecraftforge.gradle.forge'
+apply plugin: 'org.spongepowered.mixin'
+apply plugin: 'com.github.johnrengelman.shadow'
+
+version project.modVersion
+group project.modGroup //http://maven.apache.org/guides/mini/guide-naming-conventions.html
+
+compileJava {
+    sourceCompatibility = '1.8'
+    targetCompatibility = '1.8'
+}
+
+test {
+    useJUnitPlatform()
+}
+
+
+minecraft {
+    version = project.forgeVersion
+    runDir = 'run'
+    mappings = project.mcpVersion
+    coreMod = ''
+    makeObfSourceJar = true
+
+    replaceIn 'reference/Reference.java'
+    replace '${version}', project.version
+    replace '${mcversion}', project.minecraft.version
+    replace '${modVersion}', project.modVersion
+    replace '${version_minecraft}', project.version_minecraft
+    replace '${version_lunatriuscore}', project.version_lunatriuscore
+    replace '${version_schematica}', project.version_schematica
+    replace '${forgeVersion}', project.forgeVersion
+}
+
+repositories {
+    maven {
+        name = 'spongepowered-repo'
+        url = 'https://repo.spongepowered.org/repository/maven-public/'
+    }
+    maven {
+        name = 'impactdevelopment-repo'
+        url = 'https://impactdevelopment.github.io/maven/'
+    }
+    maven {
+        name = 'swt-repo'
+        url = "http://maven-eclipse.github.io/maven"
+    }
+    maven {
+        name = "jitpack.io"
+        url = "https://jitpack.io"
+    }
+    mavenCentral()
+    jcenter()
+}
+
+dependencies {
+    compile 'net.minecraftforge:forge:1.12.2-14.23.5.2859'
+    compile('org.spongepowered:mixin:0.7.4-SNAPSHOT') {
+        exclude module: 'launchwrapper'
+        exclude module: 'guava'
+        exclude module: 'gson'
+        exclude module: 'commons-io'
+    }
+    compile 'org.jetbrains.kotlin:kotlin-stdlib:1.7.21'
+    compile 'org.jetbrains.kotlin:kotlin-reflect:1.7.21'
+    compile 'org.java-websocket:Java-WebSocket:1.5.3'
+    compile 'club.minnced:java-discord-rpc:2.0.2'
+    compile group: 'org.slick2d', name: 'slick2d-core', version: '1.0.2'
+    compile "com.github.ionar2:Alpine:1.9f"
+    compile group: 'net.jodah', name: 'typetools', version: '0.5.0'
+    compile group: 'org.yaml', name: 'snakeyaml', version: '1.19'
+    compile(group: 'org.reflections', name: 'reflections', version: '0.9.11') {
+
+    }
+
+    processResources {
+        inputs.property 'version', project.version
+        inputs.property 'mcversion',
+                project.minecraft.version
+        from(sourceSets.main.resources.srcDirs)
+                {
+            include 'mcmod.info'
+            expand 'version': project.version,
+                    'mcversion': project.minecraft.version
+        }
+        rename '(.+_at.cfg)', 'META-INF/$1'
+    }
+
+    shadowJar {
+        dependencies {
+            compile files('lib/lib.jar')
+            include(dependency('org.spongepowered:mixin'))
+            include(dependency('org.jetbrains.kotlin:kotlin-stdlib:1.2.71'))
+            include(dependency('org.jetbrains.kotlin:kotlin-reflect:1.2.71'))
+            include(dependency('club.minnced:java-discord-rpc'))
+            include(dependency("org.java-websocket:Java-WebSocket:1.5.3"))
+            include(dependency('org.reflections:reflections'))
+            include(dependency('org.javassist:javassist'))
+            include(dependency('net.jodah:typetools'))
+            include(dependency('org.yaml:snakeyaml'))
+        }
+        exclude 'LICENSE.txt'
+        classifier = 'release'
+    }
+
+
+    mixin
+            {
+        defaultObfuscationEnv searge
+        add sourceSets.main,
+                'mixins.abyss.refmap.json'
+    }
+
+    reobf {
+        shadowJar
+                {
+            mappingType = 'SEARGE'
+            classpath =
+                    sourceSets.main.compileClasspath
+        }
+    }
+
+    jar
+            {
+        manifest
+                {
+            attributes(
+                    TweakOrder: "0",
+                    MixinConfigs: "mixins.abyss.json",
+                    FMLCorePluginContainsFMLMod: "true",
+                    FMLAT: "abyss_at.cfg",
+                    tweakClass: "org.spongepowered.asm.launch.MixinTweaker",
+                    ForceLoadAsMod: "true",
+                    FMLCorePlugin: "me.abyss.drm.DRM"
+            )}
+
+
+    }
+
+
+
+
+}
