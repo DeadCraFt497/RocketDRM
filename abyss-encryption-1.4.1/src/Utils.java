@@ -2,7 +2,6 @@ import javax.crypto.Cipher;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
-// i coded all of this myself
 public class Utils
 {
     public static String encrypt( String in )
@@ -51,7 +50,6 @@ public class Utils
 
     public static byte[] parseHexBinary(String s) {
         final int len = s.length();
-        // "111" is not a valid hex encoding.
         if (len % 2 != 0) {
             throw new IllegalArgumentException("hexBinary needs to be even-length: " + s);
         }
